@@ -49,6 +49,8 @@ static const AVOption vidstabdetect_options[] = {
     {"result",      "path to the file used to write the transforms",                 OFFSET(result),             AV_OPT_TYPE_STRING, {.str = DEFAULT_RESULT_NAME}, .flags = FLAGS},
     {"shakiness",   "how shaky is the video and how quick is the camera?"
                     " 1: little (fast) 10: very strong/quick (slow)",                OFFSETC(shakiness),         AV_OPT_TYPE_INT,    {.i64 = 5},      1,  10, FLAGS},
+    {"seek_range",  "How far (in pixels) can we search for local matches?"
+                    "(def: 1/7 of the smallest image dimension )",                   OFFSETC(seek_range),        AV_OPT_TYPE_INT,    {.i64 = -1},    -1,1000, FLAGS},
     {"accuracy",    "(>=shakiness) 1: low 15: high (slow)",                          OFFSETC(accuracy),          AV_OPT_TYPE_INT,    {.i64 = 15},     1,  15, FLAGS},
     {"stepsize",    "region around minimum is scanned with 1 pixel resolution",      OFFSETC(stepSize),          AV_OPT_TYPE_INT,    {.i64 = 6},      1,  32, FLAGS},
     {"mincontrast", "below this contrast a field is discarded (0-1)",                OFFSETC(contrastThreshold), AV_OPT_TYPE_DOUBLE, {.dbl = 0.25}, 0.0, 1.0, FLAGS},
@@ -119,6 +121,7 @@ static int config_input(AVFilterLink *inlink)
     vsMotionDetectGetConfig(&s->conf, md);
     av_log(ctx, AV_LOG_INFO, "Video stabilization settings (pass 1/2):\n");
     av_log(ctx, AV_LOG_INFO, "     shakiness = %d\n", s->conf.shakiness);
+    av_log(ctx, AV_LOG_INFO, "     seek_range= %d\n", s->conf.seek_range);
     av_log(ctx, AV_LOG_INFO, "      accuracy = %d\n", s->conf.accuracy);
     av_log(ctx, AV_LOG_INFO, "      stepsize = %d\n", s->conf.stepSize);
     av_log(ctx, AV_LOG_INFO, "   mincontrast = %f\n", s->conf.contrastThreshold);
